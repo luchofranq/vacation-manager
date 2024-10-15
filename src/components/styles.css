@@ -1,0 +1,46 @@
+/* styles.css o el archivo CSS que estés usando */
+
+.react-calendar {
+    border: none; /* Elimina el borde predeterminado */
+    border-radius: 8px; /* Esquinas redondeadas */
+  }
+  
+  .react-calendar__month-view__days__day {
+    padding: 10px; /* Espaciado interno */
+    color: #333; /* Color del texto de los días */
+    background-color: #f0f0f0; /* Fondo de los días */
+    border-radius: 4px; /* Esquinas redondeadas */
+  }
+  
+  .react-calendar__month-view__days__day--neighboringMonth {
+    color: #ccc; /* Color de los días del mes vecino */
+  }
+  
+  .react-calendar__tile {
+    transition: background-color 0.3s; /* Transición suave para hover */
+  }
+  
+  .react-calendar__tile:hover {
+    background-color: #a0d0e0; /* Color de fondo al pasar el mouse */
+    color: #fff; /* Color del texto al pasar el mouse */
+  }
+  
+  .react-calendar__tile--active {
+    background-color: #007bff; /* Color de fondo para el día activo */
+    color: white; /* Color del texto para el día activo */
+  }
+  
+  .react-calendar__tile--active:hover {
+    background-color: #0056b3; /* Color más oscuro para el día activo al pasar el mouse */
+  }
+  
+  .react-calendar__navigation button {
+    color: #007bff; /* Color de los botones de navegación */
+    background-color: transparent; /* Fondo transparente */
+    border: none; /* Sin borde */
+  }
+  
+  .react-calendar__navigation button:hover {
+    color: #0056b3; /* Color más oscuro al pasar el mouse */
+  }
+  
