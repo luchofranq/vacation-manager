@@ -63,36 +63,75 @@ const App = () => {
   };
 
   const handleAddVacation = (vacation) => {
-    const { startDate, endDate } = vacation;
-
-    // Convertir las fechas a objetos Date
-    const start = new Date(startDate);
-    const end = new Date(endDate);
+    const { start, end, username } = vacation;
     const today = new Date();
-
-    // Sumar un día a la fecha de inicio
-    start.setDate(start.getDate() + 1);
-
-    // Validaciones
-    if (start < today) {
-      alert('La fecha de inicio no puede ser anterior a la fecha actual.');
+  
+    // Aseguramos que las fechas estén en formato Date
+    const vacationStart = new Date(start);
+    const vacationEnd = new Date(end);
+  
+    // Calcular la duración de las vacaciones (en días)
+    const vacationDuration = Math.ceil((vacationEnd - vacationStart) / (1000 * 3600 * 24)) + 1; // Incluye el día de inicio
+  
+    // Verificar que la duración de las vacaciones no sea mayor a 28 días
+    if (vacationDuration > 28) {
+      alert('The vacation duration cannot exceed 28 days.');
       return;
     }
-
-    // Calcular duración
-    const duration = (end - start) / (1000 * 60 * 60 * 24); // Diferencia en días
-    if (duration > 28) {
-      alert('La duración de las vacaciones no puede ser mayor a 28 días.');
+  
+    // Filtrar las vacaciones ya solicitadas por el usuario en el mismo año
+    const userVacationsThisYear = vacations.filter(vacation => {
+      const vacationStart = new Date(vacation.start); // Aseguramos que sea un Date
+      const vacationYear = vacationStart.getFullYear();
+      const startDate = new Date(start); // Convertimos también la fecha de inicio a Date
+      return vacation.username === username && vacationYear === startDate.getFullYear();
+    });
+  
+    // Calcular el total de días que el usuario ya ha solicitado en el mismo año
+    const totalDaysTaken = userVacationsThisYear.reduce((total, vacation) => {
+      const startDate = new Date(vacation.start);
+      const endDate = new Date(vacation.end);
+      const duration = Math.ceil((endDate - startDate) / (1000 * 3600 * 24)) + 1;
+      return total + duration;
+    }, 0);
+  
+    // Verificar si el total de días solicitados supera los 28 días
+    if (totalDaysTaken + vacationDuration > 28) {
+      alert('You cannot exceed 28 days of vacation per year.');
       return;
     }
-
-    // Incluir la fecha de inicio y fin en las vacaciones
+  
+    // Si la validación pasó, se agrega la nueva solicitud de vacaciones
     setVacations((prev) => {
-      const updatedVacations = [...prev, { ...vacation, username: currentUser.username }];
+      const updatedVacations = [...prev, { ...vacation, status: 'pending' }];
+      localStorage.setItem('vacations', JSON.stringify(updatedVacations));
+      return updatedVacations;
+    });
+  
+    alert('Vacation request submitted successfully!');
+  };
+  
+
+  const handleApproveVacation = (vacation) => {
+    setVacations((prev) => {
+      const updatedVacations = prev.map(v => 
+        v.start === vacation.start && v.username === vacation.username 
+          ? { ...v, status: 'approved' }
+          : v
+      );
       localStorage.setItem('vacations', JSON.stringify(updatedVacations));
       return updatedVacations;
     });
   };
+
+  const handleRejectVacation = (vacation) => {
+    setVacations((prev) => {
+      const updatedVacations = prev.filter(v => v.start !== vacation.start || v.username !== vacation.username);
+      localStorage.setItem('vacations', JSON.stringify(updatedVacations));
+      return updatedVacations;
+    });
+  };
+
 
   return (
     <Container maxWidth="sm" style={{ padding: '20px' }}>
@@ -106,7 +145,13 @@ const App = () => {
             Welcome, {currentUser.username}!
           </Typography>
           {isAdmin ? (
-            <AdminPanel vacations={vacations} onClearVacations={clearVacations} />
+            <AdminPanel 
+            vacations={vacations} 
+            onClearVacations={clearVacations} 
+            onApproveVacation={handleApproveVacation} 
+            onRejectVacation={handleRejectVacation} 
+          />
+          
           ) : (
             <UserPanel 
   username={currentUser.username} // Pasa el nombre del usuario
@@ -138,5 +183,10 @@ const App = () => {
     </Container>
   );
 };
+
+
+
+
+
 
 export default App;

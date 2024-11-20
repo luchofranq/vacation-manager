@@ -15,7 +15,13 @@ const UserPanel = ({ username, vacations, onAddVacation }) => {
       vacationEnd.setDate(vacationEnd.getDate() + 1);
 
       const combinedTitle = username; // El título será solo el nombre del usuario
-      onAddVacation({ title: combinedTitle, start: start.toISOString(), end: vacationEnd.toISOString() });
+      onAddVacation({
+        title: combinedTitle,
+        start: start.toISOString(),
+        end: vacationEnd.toISOString(),
+        username,
+        status: 'pending', // Estado pendiente por defecto
+      });
 
       setStart(null);
       setEnd(null);
@@ -95,7 +101,7 @@ const UserPanel = ({ username, vacations, onAddVacation }) => {
         vacations.map((vacation, index) => (
           <div key={index}>
             <p>
-              {vacation.title} - {new Date(vacation.start).toDateString()} to {new Date(vacation.end).toDateString()}
+              {vacation.title} - {new Date(vacation.start).toDateString()} to {new Date(vacation.end).toDateString()} (Status: {vacation.status})
             </p>
           </div>
         ))
@@ -105,7 +111,7 @@ const UserPanel = ({ username, vacations, onAddVacation }) => {
 };
 
 UserPanel.propTypes = {
-  username: PropTypes.string.isRequired,
+  username: PropTypes.string.isRequired,            
   vacations: PropTypes.array.isRequired,
   onAddVacation: PropTypes.func.isRequired,
 };
