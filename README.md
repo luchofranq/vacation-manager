@@ -25,10 +25,6 @@ This will grant you access to the admin functionalities, where you can manage va
 - **Styling**: Custom CSS
 - **Development Tools**: GitHub Pages for deployment, Vite for building and packaging.
 
-## Live Demo
-
-You can view the live application [here](https://luchofranq.github.io/vacation-manager/).
-
 ## Installation
 
 To run this project locally, follow these steps:
